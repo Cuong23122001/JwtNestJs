@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from "@nestjs/common";
+import { Body, Controller, Param, Post, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
-import { Account } from "./schema/auth.schema";
 
 @Controller('auth')
 //export = "make public"
@@ -17,18 +17,22 @@ export class AuthController {
     async register(
         @Body()
         registerDto: RegisterDto
-    ): Promise<{ token: string }> {
+    ): Promise<any> {
         return this.authService.register(registerDto);
     }
     @Post("login")
     async login(
         @Body()
         loginDto: LoginDto
-    ): Promise<{ token: string }> {
+    ): Promise<any> {
         return this.authService.login(loginDto);
     }
-    // @Post("logout")
-    // logout() {
-    //     return this.authService.logout();
-    // }
+    @UseGuards(AuthGuard())
+    @Post("logout/:id")
+    async logout(
+        @Param('id')
+        id: string,
+    ): Promise<any> {
+        return this.authService.logout(id);
+    }
 }

@@ -1,4 +1,5 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt/dist";
 import { InjectModel } from "@nestjs/mongoose/dist";
 import mongoose from "mongoose";
@@ -10,33 +11,70 @@ export class AuthService {
     constructor(
         @InjectModel("Account")
         private accountModel: mongoose.Model<AccountDocument>,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private config: ConfigService,
     ) { }
 
-    async register(registerDto: RegisterDto): Promise<{ token: string }> {
+    async register(registerDto: RegisterDto): Promise<any> {
         const { username, password } = registerDto;
-        const user = await this.accountModel.create({
-            username,
-            password
-        })
-        const token = this.jwtService.sign({ id: user._id })
-        return { token };
-    }
-
-    // async register(acc: Account): Promise<Account> {
-    //     const account = await this.accountModel.create(acc);
-    //     return account;
-    // }
-    async login(loginDto: LoginDto): Promise<{ token: string }> {
-        const { username, password } = loginDto;
-
-        const account = await this.accountModel.findOne({ username, password }).exec();
-        const token = this.jwtService.sign({ id: account._id })
-        return { token };
-    }
-    logout() {
-        return {
-            message: "Logout"
+        const account = await this.accountModel.findOne({ username }).exec();
+        if (!account) {
+            await this.accountModel.create({
+                username,
+                password
+            })
+            return { msg: "Register successfully!!!" };
+        } else {
+            return { msg: "Username is exist" };
         }
+
+    }
+    async login(loginDto: LoginDto): Promise<any> {
+        const { username, password } = loginDto;
+        const account = await this.accountModel.findOne({ username, password }).exec();
+        if (account) {
+            const token = await this.getTokens(account._id.toString());
+            const refresh_token = token.refresh_token;
+
+            await this.accountModel.findByIdAndUpdate(account._id, {
+                token: { refresh_token: refresh_token }
+            })
+
+            return { account, token };
+        } else {
+            return { msg: "Login Fail!!!" };
+        }
+
+    }
+    async logout(id: string): Promise<any> {
+        const account = await this.accountModel.findById(id).exec();
+        if (account) {
+            await this.accountModel.findByIdAndUpdate(account._id, {
+                token: { refresh_token: "" }
+            })
+
+            return { msg: "Logout successfully!!!" };
+        } else {
+            return { msg: "Invalid!" };
+        }
+    }
+
+    async getTokens(id: string): Promise<{
+        access_token: string,
+        refresh_token: string
+    }> {
+        const access_token = await this.jwtService.signAsync({ id }, {
+            secret: this.config.get<string>("JWT_ACCESS_SECRET"),
+            expiresIn: this.config.get<string>("JWT_ACCESS_TIME"),
+        })
+        const refresh_token = await this.jwtService.signAsync({ id }, {
+            secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+            expiresIn: this.config.get<string>("JWT_REFRESH_TIME"),
+        })
+
+        return {
+            access_token: access_token,
+            refresh_token: refresh_token,
+        };
     }
 }

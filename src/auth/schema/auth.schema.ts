@@ -9,6 +9,8 @@ export class Account {
     username: String;
     @Prop({ required: true })
     password: String;
+    @Prop()
+    token: [{ type: Object }];
 }
 export const AccountSchema = SchemaFactory.createForClass(Account);
 // export class Account { }

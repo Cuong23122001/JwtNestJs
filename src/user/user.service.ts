@@ -1,36 +1,42 @@
-import { Injectable } from "@nestjs/common";
-
-export type User = {
-    id: number;
-    name: string;
-    username: string;
-    password: string
-}
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import mongoose from "mongoose";
+import { CreateAnUserDto } from "./dto/createAnUser.dto";
+import { UpdateUserDto } from "./dto/updateUser.dto";
+import { User, UserDocument } from "./schema/user.schema";
 
 @Injectable()
 export class UserService {
-    private readonly user: User[] = [
-        {
-            id: 1,
-            name: "NGuyen Van A",
-            username: "user1",
-            password: "123"
-        },
-        {
-            id: 2,
-            name: "NGuyen Van B",
-            username: "user2",
-            password: "123"
-        },
-        {
-            id: 3,
-            name: "NGuyen Van C",
-            username: "user3",
-            password: "123"
-        }
-    ];
+    constructor(
+        @InjectModel("User")
+        private userModel: mongoose.Model<UserDocument>) { }
 
-    async findOne(username: string): Promise<User | undefined> {
-        return this.user.find(u => u.username === username);
+    async createAnUser(createAnUser: User): Promise<User> {
+        const user = await this.userModel.create(createAnUser)
+        return user;
+    }
+    async getAllUser(): Promise<User[]> {
+        const users = await this.userModel.find();
+        return users;
+    }
+    async getAnUser(id: string): Promise<User> {
+        const user = await this.userModel.findById(id);
+        if (!user) {
+            throw new NotFoundException('User not found.');
+        }
+        return user;
+    }
+    async updateAnUser(id: string, updateUser: User): Promise<User> {
+        const user = await this.userModel.findByIdAndUpdate(id, updateUser);
+        return user;
+    }
+    async deleteUser(id: string): Promise<any> {
+        const user = await this.userModel.findById(id);
+        if (!user) {
+            throw new NotFoundException('User not found.');
+        }
+        await this.userModel.findByIdAndDelete(id);
+        return 'Delete User Successfully!!!';
+
     }
 }

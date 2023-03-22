@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { CreateBlogDto } from './dto/createAnBlog.dto';
-import { UpdateBlogDto } from './dto/updateBlog.dto';
-import { Blog } from './schema/blog.schema';
+import { CreateBlogDto } from '../dto/createBlog.dto';
+import { UpdateBlogDto } from '../dto/updateBlog.dto';
+import { Blog } from '../schema/blog.schema';
 import { BlogService } from './blog.service';
 @Controller('blog')
 export class BlogController {

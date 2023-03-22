@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { CreateAnUserDto } from './dto/createAnUser.dto';
-import { UpdateUserDto } from './dto/updateUser.dto';
-import { User } from './schema/user.schema';
+import { CreateUserDto } from '../dto/createUser.dto';
+import { UpdateUserDto } from '../dto/updateUser.dto';
+import { User } from '../schema/user.schema';
 import { UserService } from './user.service';
 @Controller('user')
 export class UserController {
@@ -15,9 +15,9 @@ export class UserController {
     @Post("create")
     async create(
         @Body()
-        createAnUser: CreateAnUserDto
+        createUser: CreateUserDto
     ): Promise<User> {
-        return this.userService.createAnUser(createAnUser);
+        return this.userService.createAnUser(createUser);
     }
 
     //Get All User

@@ -1,25 +1,25 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt/dist";
 import { InjectModel } from "@nestjs/mongoose/dist";
 import mongoose from "mongoose";
-import { LoginDto } from "./dto/login.dto";
-import { RegisterDto } from "./dto/register.dto";
-import { Account, AccountDocument } from "./schema/auth.schema";
+import { LoginDto } from "../dto/login.dto";
+import { RegisterDto } from "../dto/register.dto";
+import { UserDocument } from "../schema/user.schema";
 @Injectable()//this is "Dependency Injection"
 export class AuthService {
     constructor(
-        @InjectModel("Account")
-        private accountModel: mongoose.Model<AccountDocument>,
+        @InjectModel("User")
+        private userModel: mongoose.Model<UserDocument>,
         private jwtService: JwtService,
         private config: ConfigService,
     ) { }
 
     async register(registerDto: RegisterDto): Promise<any> {
         const { username, password } = registerDto;
-        const account = await this.accountModel.findOne({ username }).exec();
+        const account = await this.userModel.findOne({ username }).exec();
         if (!account) {
-            await this.accountModel.create({
+            await this.userModel.create({
                 username,
                 password
             })
@@ -31,12 +31,12 @@ export class AuthService {
     }
     async login(loginDto: LoginDto): Promise<any> {
         const { username, password } = loginDto;
-        const account = await this.accountModel.findOne({ username, password }).exec();
+        const account = await this.userModel.findOne({ username, password }).exec();
         if (account) {
             const token = await this.getTokens(account._id.toString());
             const refresh_token = token.refresh_token;
 
-            await this.accountModel.findByIdAndUpdate(account._id, {
+            await this.userModel.findByIdAndUpdate(account._id, {
                 token: { refresh_token: refresh_token }
             })
 
@@ -47,9 +47,9 @@ export class AuthService {
 
     }
     async logout(id: string): Promise<any> {
-        const account = await this.accountModel.findById(id).exec();
+        const account = await this.userModel.findById(id).exec();
         if (account) {
-            await this.accountModel.findByIdAndUpdate(account._id, {
+            await this.userModel.findByIdAndUpdate(account._id, {
                 token: { refresh_token: "" }
             })
 

@@ -11,4 +11,3 @@ export class Blog {
     content: String;
 }
 export const BlogSchema = SchemaFactory.createForClass(Blog);
-// export class Account { }

@@ -4,13 +4,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { PassportStrategy } from '@nestjs/passport';
 import { Model } from 'mongoose';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { Account } from '../schema/auth.schema';
+import { User } from '../../schema/user.schema';
 
 @Injectable()
 export class RefreshTokenStrategy extends PassportStrategy(Strategy) {
     constructor(
-        @InjectModel("Account")
-        private userModel: Model<Account>,
+        @InjectModel("User")
+        private userModel: Model<User>,
         config: ConfigService,
     ) {
         super({

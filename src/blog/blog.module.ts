@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { BlogController } from './blog.controller';
 import { BlogService } from './blog.service';
-import { BlogSchema } from './schema/blog.schema';
+import { BlogSchema } from '../schema/blog.schema';
 
 @Module({
     imports: [

@@ -8,14 +8,17 @@ import { UserSchema } from '../schema/user.schema';
 import { RefreshTokenStrategy } from './strategies/refresh_token.strategy';
 import { AccessTokenStrategy } from './strategies/access_token.strategy';
 @Module({
-    imports: [
-        PassportModule.register({ defaultStrategy: "jwt" }),
-        JwtModule.register({}),
-        MongooseModule.forFeature([{
-            name: "User",
-            schema: UserSchema
-        }])],
-    controllers: [AuthController],
-    providers: [AuthService, RefreshTokenStrategy, AccessTokenStrategy],
+  imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.register({}),
+    MongooseModule.forFeature([
+      {
+        name: 'User',
+        schema: UserSchema,
+      },
+    ]),
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, RefreshTokenStrategy, AccessTokenStrategy],
 })
-export class AuthModule { }
+export class AuthModule {}

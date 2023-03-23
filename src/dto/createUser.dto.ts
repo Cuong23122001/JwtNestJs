@@ -3,18 +3,18 @@ import { IsNotEmpty, IsNumber, IsString, MinLength } from "class-validator"
 export class CreateUserDto {
     @IsNotEmpty()
     @IsString()
-    readonly username: string;
+    username: string;
     @IsNotEmpty()
     @IsString()
     @MinLength(6)
-    readonly password: string;
+    password: string;
     @IsNotEmpty()
     @IsString()
-    readonly name: String;
+    name: string;
     @IsNotEmpty()
     @IsNumber()
-    readonly age: Number;
+    age: number;
     @IsNotEmpty()
     @IsString()
-    readonly address: String;
+    address: string;
 }

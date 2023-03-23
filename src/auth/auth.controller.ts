@@ -5,14 +5,8 @@ import { LoginDto } from "../dto/login.dto";
 import { RegisterDto } from "../dto/register.dto";
 
 @Controller('auth')
-//export = "make public"
 export class AuthController {
-    //auth service is automatically created when initializing the controller
-    constructor(private readonly authService: AuthService) {
-
-    }
-    //Some request from client
-    //POST:.../auth/register
+    constructor(private readonly authService: AuthService) { }
     @Post("register")
     async register(
         @Body()

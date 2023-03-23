@@ -6,15 +6,16 @@ import { BlogService } from './blog.service';
 import { BlogSchema } from '../schema/blog.schema';
 
 @Module({
-    imports: [
-        PassportModule.register({ defaultStrategy: "jwt" }),
-        MongooseModule.forFeature([{
-            name: "Blog",
-            schema: BlogSchema
-        }])
-    ],
-    controllers: [BlogController],
-    providers: [BlogService],
-
+  imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    MongooseModule.forFeature([
+      {
+        name: 'Blog',
+        schema: BlogSchema,
+      },
+    ]),
+  ],
+  controllers: [BlogController],
+  providers: [BlogService],
 })
-export class BlogModule { }
+export class BlogModule {}

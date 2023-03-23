@@ -6,9 +6,15 @@ import { BlogModule } from './blog/blog.module';
 import { UserModule } from './user/user.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({
-    envFilePath: '.env',
-    isGlobal: true,
-  }), MongooseModule.forRoot(process.env.MONGOOSE_DB), AuthModule, UserModule, BlogModule],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+    }),
+    MongooseModule.forRoot(process.env.MONGOOSE_DB),
+    AuthModule,
+    UserModule,
+    BlogModule,
+  ],
 })
-export class AppModule { }
+export class AppModule {}

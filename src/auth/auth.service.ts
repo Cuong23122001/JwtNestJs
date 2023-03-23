@@ -3,10 +3,11 @@ import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt/dist";
 import { InjectModel } from "@nestjs/mongoose/dist";
 import mongoose from "mongoose";
+import * as bcrypt from 'bcrypt';
 import { LoginDto } from "../dto/login.dto";
 import { RegisterDto } from "../dto/register.dto";
 import { UserDocument } from "../schema/user.schema";
-@Injectable()//this is "Dependency Injection"
+@Injectable()
 export class AuthService {
     constructor(
         @InjectModel("User")
@@ -19,9 +20,10 @@ export class AuthService {
         const { username, password } = registerDto;
         const account = await this.userModel.findOne({ username }).exec();
         if (!account) {
+            const hashedPassword = await bcrypt.hash(password, 10);
             await this.userModel.create({
-                username,
-                password
+                username: username,
+                password: hashedPassword
             })
             return { msg: "Register successfully!!!" };
         } else {
@@ -31,16 +33,22 @@ export class AuthService {
     }
     async login(loginDto: LoginDto): Promise<any> {
         const { username, password } = loginDto;
-        const account = await this.userModel.findOne({ username, password }).exec();
+
+        const account = await this.userModel.findOne({ username });
+        const isPassword = await bcrypt.compare(password, account.password)
         if (account) {
-            const token = await this.getTokens(account._id.toString());
-            const refresh_token = token.refresh_token;
+            if (isPassword) {
+                const token = await this.getTokens(account._id.toString());
+                const refresh_token = token.refresh_token;
 
-            await this.userModel.findByIdAndUpdate(account._id, {
-                token: { refresh_token: refresh_token }
-            })
+                await this.userModel.findByIdAndUpdate(account._id, {
+                    token: { refresh_token: refresh_token }
+                })
+                return { account, token };
+            } else {
+                return { msg: 'Invalid password' };
+            }
 
-            return { account, token };
         } else {
             return { msg: "Login Fail!!!" };
         }

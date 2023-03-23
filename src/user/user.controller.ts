@@ -10,7 +10,6 @@ export class UserController {
         private readonly userService: UserService
     ) { }
 
-    //Create User
     @UseGuards(AuthGuard())
     @Post("create")
     async create(
@@ -20,7 +19,6 @@ export class UserController {
         return this.userService.createAnUser(createUser);
     }
 
-    //Get All User
     @UseGuards(AuthGuard())
     @Get("getAll")
     async getAll(
@@ -28,7 +26,6 @@ export class UserController {
         return this.userService.getAllUser();
     }
 
-    //Get An User By id
     @UseGuards(AuthGuard())
     @Get("get/:id")
     async getAnUser(
@@ -38,8 +35,7 @@ export class UserController {
         return this.userService.getAnUser(id);
     }
 
-    //Update an user by Id
-    @UseGuards(AuthGuard())
+    // @UseGuards(AuthGuard())
     @Put("update/:id")
     async updateAnUser(
         @Param('id')
@@ -50,7 +46,6 @@ export class UserController {
         return this.userService.updateAnUser(id, updateUserDto);
     }
 
-    //Delete an user by Id
     @UseGuards(AuthGuard())
     @Delete("delete/:id")
     async deleteUser(

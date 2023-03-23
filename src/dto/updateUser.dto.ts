@@ -1,13 +1,13 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator"
 
-export class CreateAnUserDto {
+export class UpdateUserDto {
     @IsNotEmpty()
     @IsString()
-    readonly name: String;
+    name: string;
     @IsNotEmpty()
     @IsNumber()
-    readonly age: Number;
+    age: number;
     @IsNotEmpty()
     @IsString()
-    readonly address: String;
+    address: string;
 }

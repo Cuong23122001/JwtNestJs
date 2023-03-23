@@ -35,7 +35,7 @@ export class UserController {
         return this.userService.getAnUser(id);
     }
 
-    // @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard())
     @Put("update/:id")
     async updateAnUser(
         @Param('id')

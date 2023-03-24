@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { modelName } from '../../constants/modelName.constants';
 export type UserDocument = HydratedDocument<User>;
 @Schema({
-  collection: 'UserDemo',
+  collection: modelName.User,
 })
 export class User {
   @Prop()

@@ -4,16 +4,20 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UserSchema } from '../schema/user.schema';
+import { UserSchema } from '../user/schema/user.schema';
 import { RefreshTokenStrategy } from './strategies/refresh_token.strategy';
 import { AccessTokenStrategy } from './strategies/access_token.strategy';
+import {
+  connectionName,
+  nameStrategy,
+} from 'src/constants/modelName.constants';
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+    PassportModule.register({ defaultStrategy: nameStrategy.JWT }),
     JwtModule.register({}),
     MongooseModule.forFeature([
       {
-        name: 'User',
+        name: connectionName.User,
         schema: UserSchema,
       },
     ]),

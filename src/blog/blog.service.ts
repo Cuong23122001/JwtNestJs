@@ -12,11 +12,11 @@ export class BlogService {
   ) {}
   /**
    * Create a new blog
-   * @param dbBlog Validate properties passed in body
+   * @param createBlog Validate properties passed in body
    * @returns Promise of blog is created from database
    */
-  async createBlog(dbBlog: Blog): Promise<Blog> {
-    const blog = await this.blogModel.create(dbBlog);
+  async createBlog(createBlog: Blog): Promise<Blog> {
+    const blog = await this.blogModel.create(createBlog);
     return blog;
   }
   /**
@@ -65,6 +65,9 @@ export class BlogService {
       throw new NotFoundException('Blog not found.');
     }
     await this.blogModel.findByIdAndDelete(id);
-    return 'Delete Blog Successfully!!!';
+    return {
+      msg: 'Delete Blog Successfully!!!',
+      data: blog._id,
+    };
   }
 }

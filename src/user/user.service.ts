@@ -47,12 +47,19 @@ export class UserService {
    * @param id User id
    * @returns Promise of query from database return user
    */
-  async getAnUser(id: string): Promise<User> {
+  async getAnUser(id: string): Promise<any> {
     const user = await this.userModel.findById(id);
     if (!user) {
       throw new NotFoundException('User not found.');
     }
-    return user;
+    const getUser = {
+      _id: user._id,
+      username: user.username,
+      name: user.name,
+      age: user.age,
+      address: user.address,
+    };
+    return getUser;
   }
   /**
    * Update user by user id

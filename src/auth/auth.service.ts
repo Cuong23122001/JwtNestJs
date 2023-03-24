@@ -52,7 +52,7 @@ export class AuthService {
         await this.userModel.findByIdAndUpdate(account._id, {
           token: { refresh_token: refresh_token },
         });
-        return { account, token };
+        return { data: account._id, token };
       } else {
         return { msg: 'Invalid password' };
       }
